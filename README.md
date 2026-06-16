@@ -122,3 +122,34 @@ This arrangement ensures that every standard cell has convenient access to power
 The placement of **input and output (I/O) pins** is carried out along the boundaries of the chip. Their positions are chosen carefully based on the logical connectivity of the design. Pins that communicate extensively with specific regions of the core are generally placed closer to those areas to reduce routing complexity and improve performance.
 
 In addition, the region between the **core area** and the **die boundary**, commonly referred to as the **I/O ring region**, is reserved for essential circuitry such as pin buffers, ESD protection structures, and related interface components. To preserve this space, automated standard cell placement is restricted within these designated blockage areas.
+
+### Lab — Floorplan and Placement
+
+#### Running Floorplan
+#### Executing the Floorplanning Stage
+
+The next step in the OpenLANE flow is to perform **floorplanning**, where the initial physical structure of the chip is established. During this stage, the tool determines the core dimensions, configures the power distribution strategy, defines placement boundaries, and prepares the design for standard cell placement.
+
+```tcl id="9k4twp"
+run_floorplan
+```
+
+After the floorplanning process completes successfully, the generated **DEF (Design Exchange Format)** file can be inspected to analyze the physical information created during this stage.
+
+```bash id="r2m8vf"
+cd results/floorplan/
+less picorv32a.def
+```
+
+Reviewing the DEF file allows us to verify important floorplan details such as the die area, core area, pin locations, blockages, and other layout-related configurations before moving on to the placement stage.
+#### Visualizing the Floorplan Using Magic
+
+After generating the floorplan, the layout can be examined graphically using **Magic**, an open-source VLSI layout viewer and editor. Loading the DEF file into Magic allows us to inspect the die structure, core boundaries, pin placement, and overall floorplan arrangement created during the previous stage.
+
+```bash id="m6p2qx"
+magic -T /home/vsduser/Desktop/OpenLane/designs/picorv32a/sky130A/libs.tech/magic/sky130A.tech \
+      lef read ../../tmp/merged.nom.lef \
+      def read picorv32a.def &
+```
+
+By opening the design in Magic, we can interactively explore the generated floorplan and verify that the physical layout information has been interpreted correctly before proceeding to placement and optimization stages.
