@@ -76,3 +76,21 @@ prep -design picorv32a
 ```
 
 Executing this command prepares the `picorv32a` design for subsequent stages in OpenLANE, ensuring that all technology information and project settings are correctly initialized before synthesis begins.
+#### Executing the Synthesis Stage
+
+Once the design setup is complete, the next step is to perform **logic synthesis**. During this stage, the RTL description is translated into a gate-level netlist using the standard cell library specified by the target technology.
+
+```tcl id="7h2kqp"
+run_synthesis
+```
+
+After synthesis finishes successfully, the generated reports can be used to examine important design statistics. One commonly observed metric is the **flop ratio**, which indicates the proportion of sequential elements present in the design.
+
+```text
+Flop Ratio = (Number of D Flip-Flops) / (Total Number of Standard Cells)
+           = 1613 / 15762
+           ≈ 0.1023
+           ≈ 10.23%
+```
+
+A flop ratio of approximately **10.23%** suggests that around one-tenth of the synthesized cells are sequential elements, providing a quick sanity check on the overall composition of the design.
