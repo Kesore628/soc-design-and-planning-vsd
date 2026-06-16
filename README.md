@@ -94,3 +94,31 @@ Flop Ratio = (Number of D Flip-Flops) / (Total Number of Standard Cells)
 ```
 
 A flop ratio of approximately **10.23%** suggests that around one-tenth of the synthesized cells are sequential elements, providing a quick sanity check on the overall composition of the design.
+
+## Day 2 — Floorplanning and Introduction to Library Cells
+
+#### Chip Floorplanning — Core Area and Utilisation
+
+Floorplanning is about deciding where everything goes on the chip. Two key parameters drive this:
+
+- **Utilisation Factor** = (Area occupied by Netlist) / (Total Core Area)
+  - A utilisation of 0.5–0.6 is typical — you want room for buffers, routing, etc.
+- **Aspect Ratio** = Height / Width of the core
+  - A ratio of 1 means a square; anything else is a rectangle.
+
+#### Pre-Placed Cells and Decoupling Capacitors
+
+**Pre-placed cells** (like memories, PLLs, and complex IP blocks) are fixed in position before automated placement runs. Their location is determined manually based on connectivity and power intent.
+
+**Decoupling capacitors** are placed around pre-placed cells to act as local charge reservoirs — they compensate for voltage drops caused by switching activity and ensure these blocks see clean power.
+#### Power Planning — Establishing a Reliable Power Distribution Network
+
+An efficient power distribution network is essential for maintaining stable chip operation. To achieve this, designers typically employ a combination of **power rings** and a **power mesh** throughout the layout. Power rings are formed around the core region, while the mesh extends across the chip using multiple metal layers to distribute the **VDD** and **VSS** supplies uniformly.
+
+This arrangement ensures that every standard cell has convenient access to power through nearby supply connections, thereby reducing **IR drop**, improving voltage stability, and minimizing the risk of **electromigration** caused by excessive current density.
+
+#### I/O Pin Placement and Cell Placement Restrictions
+
+The placement of **input and output (I/O) pins** is carried out along the boundaries of the chip. Their positions are chosen carefully based on the logical connectivity of the design. Pins that communicate extensively with specific regions of the core are generally placed closer to those areas to reduce routing complexity and improve performance.
+
+In addition, the region between the **core area** and the **die boundary**, commonly referred to as the **I/O ring region**, is reserved for essential circuitry such as pin buffers, ESD protection structures, and related interface components. To preserve this space, automated standard cell placement is restricted within these designated blockage areas.
