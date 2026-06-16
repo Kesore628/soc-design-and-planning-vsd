@@ -478,3 +478,13 @@ After PDN generation, the design is prepared for the routing stage with proper p
 | **Netgen**      | Performs Layout Versus Schematic (LVS) checking               |
 | **Sky130 PDK**  | Open-source 130nm Process Design Kit from SkyWater Technology |
 
+### Key Learnings
+
+* Developed an understanding of the complete ASIC design flow, from RTL design to GDSII generation using open-source tools.
+* Gained practical exposure to floorplanning, standard cell placement, clock tree synthesis, and routing.
+* Worked with the `picorv32a` RISC-V core to explore real-world physical design implementation.
+* Learned the process of integrating and characterising custom standard cells within the design flow.
+* Performed timing analysis using OpenSTA and understood the importance of setup and hold checks.
+* Explored advanced STA concepts such as OCV and CRPR and their impact on timing closure.
+* Studied post-route SPEF extraction and how interconnect parasitics influence final sign-off timing.
+* Enhanced hands-on skills with industry-relevant open-source EDA tools used in ASIC development.
