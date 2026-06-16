@@ -491,7 +491,14 @@ After PDN generation, the design is prepared for the routing stage with proper p
 
 ## Acknowledgements
 
-A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson P Jose* (Physical Design Engineer, Intel) for putting together such a well-structured and genuinely practical workshop. Running a real CPU from RTL to GDSII using nothing but open-source tools is something I didn’t expect to be possible — and yet here we are.
-- **Kunal Ghosh** — Co-founder, VSD (VLSI System Design)
-- **Nickson Jose** — for the `vsdstdcelldesign` repository used in Day 3 labs
-- **NASSCOM** — for facilitating this workshop program
+A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson P Jose* (Physical Design Engineer, Intel) for putting together such a well-structured and genuinely practical workshop. Running a real CPU from RTL to GDSII using nothing but open-source tools is something I didn’t expect to be possible —and yet here we are.
+**Kunal Ghosh** — Co-founder, VSD (VLSI System Design)
+**Nickson Jose** — for the `vsdstdcelldesign` repository used in Day 3 labs
+**NASSCOM** — for facilitating this workshop program
+  
+## References
+[VSD SoC Design Workshop](https://www.vlsisystemdesign.com/)
+[OpenLANE GitHub](https://github.com/The-OpenROAD-Project/OpenLane)
+[SkyWater Sky130 PDK](https://github.com/google/skywater-pdk)
+[vsdstdcelldesign](https://github.com/nickson-jose/vsdstdcelldesign)
+Documented by Nayana | VTU Electronics & Communication Engineering | VLSI & Physical Design Enthusiast
