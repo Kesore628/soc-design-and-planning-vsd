@@ -39,3 +39,40 @@ Building a completely open-source ASIC design flow requires three essential comp
 
 For many years, access to PDKs was restricted because semiconductor foundries distributed them only under strict confidentiality agreements. A major breakthrough occurred in **June 2020**, when **Google** partnered with **SkyWater Technology** to release the **Sky130 PDK**, marking the first widely available open-source Process Design Kit and significantly lowering the barriers to ASIC development and education.
 
+#### OpenLANE: Automating the RTL-to-GDSII Design Flow
+
+**OpenLANE** is an open-source ASIC implementation framework that integrates several EDA tools to automate the complete journey from an RTL description to the final **GDSII** file used for chip fabrication. By combining multiple tools into a unified flow, it simplifies the physical design process for digital IC development.
+
+| Design Stage                   | Tool(s)                |
+| ------------------------------ | ---------------------- |
+| Logic Synthesis                | Yosys, ABC             |
+| Floorplanning & Power Planning | OpenROAD               |
+| Cell Placement                 | OpenROAD               |
+| Clock Tree Synthesis (CTS)     | TritonCTS              |
+| Global and Detailed Routing    | FastRoute, TritonRoute |
+| Parasitic Extraction           | OpenRCX                |
+| GDSII Generation               | Magic, KLayout         |
+| Static Timing Analysis         | OpenSTA                |
+| DRC and LVS Verification       | Magic, Netgen          |
+
+### Lab Exercise — Executing OpenLANE with `picorv32a`
+
+#### Initializing the OpenLANE Environment
+
+To begin the implementation flow, navigate to the OpenLANE directory and start the tool in **interactive mode**. This mode provides greater control by allowing each stage of the flow to be executed individually and inspected before proceeding to the next step.
+
+```bash
+cd /home/vscode/Desktop/OpenLane
+make mount
+./flow.tcl -interactive
+package require openlane 1.0.2
+```
+#### Initializing the Design Environment
+
+Before starting the synthesis stage, the design environment must be configured properly. This preparation step combines the required **technology LEF** and **cell LEF** files, creates the necessary run directories, and loads the design-specific configuration files needed for the implementation flow.
+
+```tcl
+prep -design picorv32a
+```
+
+Executing this command prepares the `picorv32a` design for subsequent stages in OpenLANE, ensuring that all technology information and project settings are correctly initialized before synthesis begins.
