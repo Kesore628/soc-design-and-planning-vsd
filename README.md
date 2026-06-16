@@ -220,3 +220,53 @@ The `extract all` command gathers the connectivity information from the layout, 
 
 The resulting SPICE file can then be used for simulation to analyze the functional behavior and timing characteristics of the custom inverter cell.
 
+#### Simulating the Extracted Netlist with ngspice
+
+After generating the SPICE netlist, the circuit can be simulated using **ngspice** to observe the inverter's switching behavior and evaluate its timing performance.
+
+```bash id="p8v3mk"
+ngspice sky130_inv.spice
+```
+
+Within the ngspice environment, the input and output waveforms can be displayed using the following command:
+
+```ngspice id="w2n6qy"
+plot y vs time a
+```
+
+By analyzing the generated waveform, important timing parameters such as **rise time**, **fall time**, and **propagation delay** can be determined.
+
+#### Rise Transition Time Measurement
+
+The **rise transition time** represents the duration required for the output voltage to increase from **20% to 80%** of its final value.
+
+```text
+Rise Transition Time
+= Time at 80% of Output Voltage − Time at 20% of Output Voltage
+```
+
+For a supply voltage of **3.3 V**:
+
+* **20% of Output Voltage** = 0.66 V (660 mV)
+* **80% of Output Voltage** = 2.64 V
+
+Therefore, the rise time is obtained by measuring the time difference between the output crossing **0.66 V** and **2.64 V** on the rising edge.
+
+#### Fall Transition Time Measurement
+
+The **fall transition time** indicates the time taken by the output voltage to decrease from **80% to 20%** of its final value.
+
+```text
+Fall Transition Time
+= Time at 20% of Output Voltage − Time at 80% of Output Voltage
+```
+
+For the same **3.3 V** supply:
+
+* **80% of Output Voltage** = 2.64 V
+* **20% of Output Voltage** = 0.66 V
+
+The fall time is calculated by measuring the interval between the output crossing **2.64 V** and **0.66 V** during the falling transition.
+
+From these waveform measurements, the switching characteristics of the CMOS inverter can be characterized and used for further timing analysis and standard cell validation.
+
