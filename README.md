@@ -488,3 +488,10 @@ After PDN generation, the design is prepared for the routing stage with proper p
 * Explored advanced STA concepts such as OCV and CRPR and their impact on timing closure.
 * Studied post-route SPEF extraction and how interconnect parasitics influence final sign-off timing.
 * Enhanced hands-on skills with industry-relevant open-source EDA tools used in ASIC development.
+
+## Acknowledgements
+
+A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson P Jose* (Physical Design Engineer, Intel) for putting together such a well-structured and genuinely practical workshop. Running a real CPU from RTL to GDSII using nothing but open-source tools is something I didn’t expect to be possible — and yet here we are.
+- **Kunal Ghosh** — Co-founder, VSD (VLSI System Design)
+- **Nickson Jose** — for the `vsdstdcelldesign` repository used in Day 3 labs
+- **NASSCOM** — for facilitating this workshop program
