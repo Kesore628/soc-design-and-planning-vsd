@@ -454,3 +454,27 @@ The **routing phase** establishes the physical connections between all placed ce
 2. **Detailed Routing (TritonRoute)** – Using the routing guides produced during global routing, the detailed router assigns precise metal segments, vias, and track locations for every connection. This stage strictly enforces **Design Rule Check (DRC)** constraints, ensuring that the final routing solution is both electrically correct and fabrication compliant.
 
 Global routing focuses on planning and resource allocation, while detailed routing refines those plans into an exact physical implementation ready for sign-off verification and tape-out.
+
+Lab — Power Distribution, Routing
+Creating the Power Distribution Network (PDN)
+
+The Power Distribution Network (PDN) provides reliable power delivery across the entire chip by connecting the power (VDD) and ground (VSS) nets to all standard cells and macros. It consists of power rails, straps, and rings that ensure stable voltage supply while minimizing IR drop.
+
+The PDN is generated using the following command:
+
+gen_pdn
+
+After PDN generation, the design is prepared for the routing stage with proper power connectivity established throughout the layout.
+
+| Tool            | Purpose                                                       |
+| --------------- | ------------------------------------------------------------- |
+| **OpenLANE**    | Complete RTL-to-GDSII automated physical design flow          |
+| **Yosys**       | Performs RTL synthesis and technology mapping                 |
+| **OpenROAD**    | Handles floorplanning, placement, CTS, and routing            |
+| **Magic**       | Used for layout viewing, editing, DRC, and LVS verification   |
+| **OpenSTA**     | Performs Static Timing Analysis (STA) for timing verification |
+| **ngspice**     | Simulates analog and mixed-signal circuits using SPICE models |
+| **TritonRoute** | Executes detailed routing of signal connections               |
+| **Netgen**      | Performs Layout Versus Schematic (LVS) checking               |
+| **Sky130 PDK**  | Open-source 130nm Process Design Kit from SkyWater Technology |
+
