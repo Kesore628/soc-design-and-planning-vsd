@@ -440,3 +440,6 @@ report_checks -path_delay min_max -fields {slew trans net cap input_pins} -forma
 
 The generated report provides detailed visibility into both setup and hold paths after CTS, helping identify critical timing paths and verify that the design satisfies its timing requirements before proceeding to the routing stage.
 
+Exit to OpenLANE flow
+exit
+---
