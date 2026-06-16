@@ -153,3 +153,70 @@ magic -T /home/vsduser/Desktop/OpenLane/designs/picorv32a/sky130A/libs.tech/magi
 ```
 
 By opening the design in Magic, we can interactively explore the generated floorplan and verify that the physical layout information has been interpreted correctly before proceeding to placement and optimization stages.
+
+## Day 3 — Design and Characterisation of Library Cells using Magic & ngspice
+#### CMOS Inverter Characterization Using SPICE
+
+To evaluate the performance of a standard cell, a **SPICE netlist** is created to model the CMOS inverter. The netlist defines the **PMOS and NMOS transistors**, including their respective **width-to-length (W/L) ratios**, along with essential simulation parameters such as the supply voltage, input excitation waveform, and output load capacitance.
+
+By simulating this circuit, several important timing characteristics of the inverter can be determined.
+
+Key performance metrics obtained from the simulation include:
+
+* **Rise Time** – The time taken for the output voltage to transition from **20% to 80%** of its final value during a rising edge.
+* **Fall Time** – The duration required for the output voltage to decrease from **80% to 20%** of its final value during a falling edge.
+* **Propagation Delay** – The delay measured between the **50% transition point of the input signal** and the corresponding **50% transition point of the output signal**, indicating the switching speed of the inverter.
+
+These parameters play a crucial role in standard cell characterization and are later used for timing analysis and library generation in the digital design flow.
+
+#### Overview of the 16-Mask CMOS Fabrication Process
+
+The manufacturing of a CMOS integrated circuit involves a series of carefully controlled processing steps, typically requiring around **16 photolithography masks** to transform a silicon wafer into a functional chip. Each stage contributes to the formation of transistors and interconnect structures within the device.
+
+The major fabrication steps include:
+
+1. **Wafer Preparation** – The process begins with the selection of a high-quality **p-type silicon substrate** possessing suitable electrical characteristics.
+2. **Active Area Definition** – Isolation regions are created using field oxidation techniques and protective **silicon nitride (Si₃N₄) masks** to define the active device areas.
+3. **Well Formation** – **N-wells and P-wells** are established through ion implantation to accommodate PMOS and NMOS transistors on the same substrate.
+4. **Gate Oxide Formation** – A thin and uniform layer of gate oxide is grown to serve as the insulating layer beneath the transistor gate.
+5. **Polysilicon Gate Deposition** – Polysilicon is deposited and patterned to form the gate electrodes that control transistor operation.
+6. **Source and Drain Engineering** – The source and drain regions are created using implantation processes such as **Lightly Doped Drain (LDD)** and halo implants to enhance device performance and reliability.
+7. **Contact and Metallization** – Contact openings are formed, followed by the deposition and patterning of multiple metal layers to establish electrical connections across the chip.
+8. **Passivation and Protection** – A final protective passivation layer is applied to shield the completed integrated circuit from environmental contaminants and mechanical damage.
+
+Together, these fabrication stages enable the realization of complex CMOS devices and form the foundation of modern semiconductor manufacturing.
+
+### Lab Exercise — Characterising a Custom Inverter Standard Cell
+
+#### Cloning the Standard Cell Design Repository
+
+To explore the layout and characterization of a custom inverter cell, the first step is to obtain the required design files by cloning the standard cell repository. This repository contains the layout, SPICE netlists, and supporting files necessary for the characterization process.
+
+```bash id="g8m2vr"
+git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+```
+
+After cloning the repository, the inverter layout can be opened using **Magic**, allowing us to inspect the transistor arrangement, routing structures, and physical implementation of the standard cell.
+
+```bash id="u4k9xp"
+magic -T sky130A.tech sky130_inv.mag &
+```
+
+Launching the layout in Magic provides an interactive view of the custom **Sky130 inverter cell**, enabling detailed examination and verification before proceeding with extraction and characterization steps.
+
+#### Generating the SPICE Netlist Using Magic
+
+Once the inverter layout has been verified, the next step is to extract its electrical representation from the physical design. Using the **tkcon** console available within Magic, the layout information can be converted into a SPICE netlist suitable for circuit simulation and characterization.
+
+Execute the following commands in the tkcon window:
+
+```tcl id="n5q7xt"
+extract all
+ext2spice cthresh 0 rthresh 0
+ext2spice
+```
+
+The `extract all` command gathers the connectivity information from the layout, while `ext2spice` converts the extracted data into a SPICE-compatible netlist. Setting the capacitance and resistance thresholds to zero ensures that all relevant parasitic components are included in the generated output.
+
+The resulting SPICE file can then be used for simulation to analyze the functional behavior and timing characteristics of the custom inverter cell.
+
