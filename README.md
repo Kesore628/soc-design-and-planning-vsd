@@ -443,3 +443,14 @@ The generated report provides detailed visibility into both setup and hold paths
 Exit to OpenLANE flow
 exit
 ---
+
+## Day 5 — Final RTL to GDSII using TritonRoute & OpenSTA
+#### Routing Stages — Global Routing and Detailed Routing
+
+The **routing phase** establishes the physical connections between all placed cells in the design. To efficiently generate manufacturable interconnects, routing is typically performed in two successive stages.
+
+1. **Global Routing (FastRoute)** – During this stage, the chip area is divided into coarse routing grids, and approximate paths are determined for each net. The router considers factors such as available routing resources, preferred metal directions, and congestion to generate routing guides without assigning exact wire locations.
+
+2. **Detailed Routing (TritonRoute)** – Using the routing guides produced during global routing, the detailed router assigns precise metal segments, vias, and track locations for every connection. This stage strictly enforces **Design Rule Check (DRC)** constraints, ensuring that the final routing solution is both electrically correct and fabrication compliant.
+
+Global routing focuses on planning and resource allocation, while detailed routing refines those plans into an exact physical implementation ready for sign-off verification and tape-out.
