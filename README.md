@@ -270,3 +270,173 @@ The fall time is calculated by measuring the interval between the output crossin
 
 From these waveform measurements, the switching characteristics of the CMOS inverter can be characterized and used for further timing analysis and standard cell validation.
 
+## Day 4 — Pre-Layout Timing Analysis and Clock Tree Synthesis
+
+#### LEF Generation and Standard Cell Port Design Guidelines
+
+For a custom standard cell to be integrated successfully into the **OpenLANE** design flow, it must be accompanied by a valid **LEF (Library Exchange Format)** file. The LEF file provides an abstract physical representation of the cell, including details such as the cell dimensions, pin geometries, routing layers, and placement boundaries required during physical implementation.
+
+While defining the LEF, certain guidelines must be followed to ensure compatibility with automated placement and routing tools:
+
+* All **input and output pins** should be positioned at the **intersection points of the predefined horizontal and vertical routing tracks**, enabling efficient and error-free routing.
+
+* The **cell width** must be an **odd multiple of the horizontal routing track pitch**, while the **cell height** should be an **odd multiple of the vertical track pitch**. Adhering to these constraints ensures that the standard cell aligns correctly with the routing grid and can be placed seamlessly alongside other cells in the library.
+
+Following these LEF design rules allows custom cells to integrate smoothly into the ASIC implementation flow and supports reliable automated routing during chip layout generation.
+
+#### Fundamentals of Static Timing Analysis (STA)
+
+**Setup Slack** is one of the most important timing metrics used to determine whether a design can operate reliably at the target clock frequency.
+
+```text
+Setup Slack = Required Arrival Time − Actual Data Arrival Time
+```
+
+For a design to satisfy setup timing requirements, the computed setup slack should be **greater than or equal to zero**.
+
+Several factors that affect timing accuracy are incorporated into STA to model real-world operating conditions:
+
+* **OCV (On-Chip Variation)** – Accounts for manufacturing process variations and changes in operating voltage and temperature by applying timing derating factors to circuit paths.
+
+* **Clock Uncertainty** – Represents timing margins introduced due to clock jitter and clock skew, ensuring robust analysis under non-ideal clock behavior.
+
+* **CRPR (Clock Reconvergence Pessimism Removal)** – Eliminates unnecessary pessimism in timing calculations when the launch and capture clock paths share common segments of the clock network.
+
+#### Clock Tree Synthesis (CTS)
+
+**Clock Tree Synthesis** is the process of constructing an optimized network of clock buffers and interconnects to distribute the clock signal uniformly throughout the chip while minimizing clock skew and maintaining signal integrity.
+
+Following CTS, timing analysis must be performed again because the clock network has been modified:
+
+* **Hold timing analysis** should be revisited, as the insertion of clock buffers introduces additional delays that can impact hold margins.
+
+* **Setup timing verification** must also be repeated since changes in the clock distribution network alter the effective clock arrival times at sequential elements.
+
+Post-CTS timing validation ensures that the design continues to meet its performance requirements under the updated clock architecture.
+
+#### Updating `config.tcl` to Integrate the Custom Standard Cell
+
+To make the newly characterized custom cell available within the OpenLANE flow, the design configuration file must be modified to reference the appropriate timing libraries and LEF files. These settings ensure that synthesis and timing analysis use the correct library information while the physical design stages recognize the custom cell geometry.
+
+```tcl id="6qv2mk"
+set ::env(LIB_SYNTH)      "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_FASTEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_SLOWEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_TYPICAL)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(EXTRA_LEFS)     [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+```
+
+The library variables specify the timing models corresponding to different process corners used during synthesis and Static Timing Analysis. The `EXTRA_LEFS` parameter enables OpenLANE to load additional LEF files from the design source directory, allowing the custom standard cell to participate seamlessly in placement and routing.
+
+With these updates in place, the design flow becomes aware of the newly added cell and can utilize it throughout the subsequent implementation stages.
+
+#### Executing Clock Tree Synthesis (CTS)
+
+After validating the pre-CTS timing results, the next stage in the physical design flow is **Clock Tree Synthesis (CTS)**. During this phase, the clock distribution network is constructed by inserting clock buffers and organizing them into a balanced tree structure to deliver the clock signal efficiently across the entire chip.
+
+```tcl id="k7p3vx"
+run_cts
+```
+
+The objective of CTS is to minimize **clock skew**, control clock latency, and maintain signal integrity at all sequential elements within the design. By carefully balancing the clock paths, the tool ensures that flip-flops receive the clock signal with minimal timing variation.
+
+Once CTS is completed, timing analysis should be performed again to verify that both **setup** and **hold** requirements continue to be satisfied, as the newly inserted clock buffers introduce actual delays into the clock network. These post-CTS checks are essential to confirm the timing reliability of the updated design before proceeding to routing.
+
+#### Post-CTS Timing Analysis Using OpenROAD
+
+After completing Clock Tree Synthesis, **OpenROAD** can be used to perform detailed timing analysis on the updated design. This process involves loading the physical design data, timing libraries, netlist, and constraints into the OpenROAD database.
+
+Launch the OpenROAD environment using:
+
+```tcl id="m8q2vx"
+openroad
+```
+
+#### Reading the LEF Information
+
+Load the merged LEF file containing the technology and standard cell definitions:
+
+```tcl id="a4k7np"
+read_lef /OpenLane/designs/picorv32a/runs/24-03_10-03/tmp/merged.nom.lef
+```
+
+#### Importing the Post-CTS DEF
+
+Read the DEF file generated after the CTS stage to restore the physical layout information:
+
+```tcl id="d6r3mt"
+read_def /OpenLane/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.def
+```
+
+#### Creating and Saving the OpenROAD Database
+
+To preserve the current design state for future analysis, create an OpenROAD database:
+
+```tcl id="n5v9kp"
+write_db pico_cts.db
+```
+
+The saved database can later be reloaded directly:
+
+```tcl id="q2m4xr"
+read_db pico_cts.db
+```
+
+#### Loading the Post-CTS Netlist
+
+Import the synthesized Verilog netlist corresponding to the design:
+
+```tcl id="w8p6kt"
+read_verilog /OpenLane/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.v
+```
+
+#### Reading the Timing Libraries
+
+Load the complete Liberty timing models required for timing analysis:
+
+```tcl id="b3n7vy"
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+```
+
+#### Linking the Design
+
+Associate the netlist with the loaded libraries to establish the complete design database:
+
+```tcl id="f9q2md"
+link_design picorv32a
+```
+
+#### Applying Timing Constraints
+
+Read the custom SDC file containing clock definitions and timing constraints:
+
+```tcl id="k4v8xp"
+read_sdc /OpenLane/designs/picorv32a/src/my_base.sdc
+```
+
+#### Propagating the Clock Network
+
+Since the clock tree has already been synthesized, configure OpenROAD to use the actual propagated clock paths:
+
+```tcl id="t6m1qr"
+set_propagated_clock [all_clocks]
+```
+
+#### Exploring Timing Report Options
+
+The available syntax and options for timing reports can be viewed using:
+
+```tcl id="u7k5vn"
+help report_checks
+```
+
+#### Generating a Detailed Timing Report
+
+Finally, produce a comprehensive timing report containing information such as slew, transition times, net delays, capacitances, and input pin details.
+
+```tcl id="p3x9mt"
+report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
+```
+
+The generated report provides detailed visibility into both setup and hold paths after CTS, helping identify critical timing paths and verify that the design satisfies its timing requirements before proceeding to the routing stage.
+
